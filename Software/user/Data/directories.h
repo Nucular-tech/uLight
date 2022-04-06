@@ -137,8 +137,8 @@ const LCPS_Entry_t PD_Func[] = {
 };
 
 const LCPS_Entry_t PD_TsFunctions[] = {
-	pstd(LCP_AccessLvl_Any, 	LCP_Normal,		Config.Func.FanConrol.Tmin[0],			((LCP_Uint32_t){ -30, 125, 5}),		LANG("Temperature min", "Мин. температура"),"%d°C"),
-	pstd(LCP_AccessLvl_Any, 	LCP_Normal,		Config.Func.FanConrol.Tmax[0],			((LCP_Uint32_t){ -30, 125, 5}),		LANG("Temperature max", "Макс. температура"),"%d°C"),
+	pstd(LCP_AccessLvl_Any, 	LCP_Normal,		Config.Func.FanConrol.Tmin[0],			((LCP_Int32_t){ -30, 125, 5}),		LANG("Temperature min", "Мин. температура"),"%d°C"),
+	pstd(LCP_AccessLvl_Any, 	LCP_Normal,		Config.Func.FanConrol.Tmax[0],			((LCP_Int32_t){ -30, 125, 5}),		LANG("Temperature max", "Макс. температура"),"%d°C"),
 	pstd(LCP_AccessLvl_Any, 	LCP_Normal,		Config.Func.FanConrol.OutMin[0],		((LCP_Uint32_t){ 0, 100, 5}),		LANG("PWM output min", "ШИМ выход мин."),"%d%%"),
 	pstd(LCP_AccessLvl_Any, 	LCP_Normal,		Config.Func.FanConrol.OutMax[0],		((LCP_Uint32_t){ 0, 100, 5}),		LANG("PWM output max", "ШИМ выход макс."),"%d%%"),
 };

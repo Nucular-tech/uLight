@@ -686,7 +686,7 @@ void transmitIRQ(void) {
 	portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 #else
 	txFifoProceed();
-	CAN1->TSR |= CAN_TSR_TXOK0 | CAN_TSR_TXOK1 | CAN_TSR_TXOK2;
+	CAN1->TSR |= CAN_TSR_RQCP0 | CAN_TSR_RQCP1 | CAN_TSR_RQCP2;
 #endif
 }
 

@@ -43,7 +43,7 @@ LC_NodeDescriptor_t LevcanNode;
 LC_NodeDescriptor_t *LevcanNodePtr;
 
 extern const Version_t VersionControl;
-extern LCPS_Entry_t PD_About[], PD_Root[];
+extern LCPS_Entry_t PD_About[];
 extern void delay_ms(uint32_t delay);
 
 void Network_Init(uint8_t node_id) {

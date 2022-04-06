@@ -23,7 +23,7 @@
 #define sDEBUG(string) string
 #endif
 
-const Version_t VersionControl = { __DATE__, sDEBUG("0.6.2") };
+const Version_t VersionControl = { __DATE__, sDEBUG("0.6.3") };
 
 typedef struct {
 	uint32_t GoToBoot;
@@ -268,7 +268,7 @@ void EXTI1_IRQHandler(void) {
 	if (RD.Menu.SWUpdate == 1) {
 		RD.Menu.SWUpdate = 0;
 		trace_printf("Reboot to boot\n");
-		GoToBoot(1, LC_GetMyNodeName(0).NodeID, -1);
+		GoToBoot(1, LC_GetMyNodeName(0).NodeID, -1); //TODO add server id?
 	}
 	if (RD.Menu.Reboot == 1) {
 		RD.Menu.Reboot = 0;
