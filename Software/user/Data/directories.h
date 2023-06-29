@@ -46,9 +46,8 @@ LCPS_Entry_t PD_Root[]
 const char conf_imports[] = LANG("?\n1\n2\n3\n4\n5\n6\n7\n8\n9\nLoading...", "?\n1\n2\n3\n4\n5\n6\n7\n8\n9\nЗагрузка...");
 const LCPS_Entry_t PD_Menu[]
 = {
-//	pstd(LCP_AccessLvl_Any, 	LCP_NLiveUpd,	RD.Menu.ImportConf, 			((LCP_Enum_t){0, 9}),	LANG("Import config.", "Импорт конфигурации"), conf_imports),
-//	pstd(LCP_AccessLvl_Any, 	LCP_NLiveUpd,	RD.Menu.ExportConf, 			((LCP_Enum_t){0, 9}),	LANG("Export config.", "Экспорт конфигурации"), conf_imports),
-//	pstd(LCP_AccessLvl_Any, 	LCP_NLiveUpd,	RD.Menu.BackupConf, 			((LCP_Enum_t){0, 1}),	LANG("Backup config.", "Бэкап конфигурации"), LANG("?\nYes\nLoading...", "?\nВкл\nСохранение...")),
+	pstd(LCP_AccessLvl_Any, 	LCP_NLiveUpd,	RD.Menu.ImportConf, 			((LCP_Enum_t){0, 9}),	LANG("Import config.", "Импорт конфигурации"), conf_imports),
+	pstd(LCP_AccessLvl_Any, 	LCP_NLiveUpd,	RD.Menu.ExportConf, 			((LCP_Enum_t){0, 9}),	LANG("Export config.", "Экспорт конфигурации"), conf_imports),
 	pbool(LCP_AccessLvl_Any, 	LCP_NLiveUpd,	RD.Menu.Reboot , 				LANG("Reboot", "Перезагрузка"),0 ),
 //	pbool(LCP_AccessLvl_Any, 	LCP_NLiveUpd,	RD.Menu.ResetWHusage , 			LANG("Reset Wh usage", "Сбросить расход Wh"),0 ),
 //	pbool(LCP_AccessLvl_Any, 	LCP_NLiveUpd,	RD.Menu.ResetStats , 			LANG("Reset stats", "Сбросить статистику "),0 ),
@@ -85,7 +84,7 @@ const LCPS_Entry_t PD_Inputs[] = {
 	pbool(LCP_AccessLvl_Any, 	LCP_ROLiveUpd,		RD.Buttons.Int6, 		LANG("Input I6", "Вход I6"), 0 ),
 };
 
-const char tsensors[] = "Off\nNTC10K3950\nNTC10K3380";
+const char tsensors[] = "Off\nNTC10K3950\nNTC10K3380\nKTY84/130";
 const LCPS_Entry_t PD_InputsConf[] = {
 	pstd(LCP_AccessLvl_Any, 	LCP_Normal,		Config.InputsCfg.T1, 					((LCP_Enum_t){0, Tsensor_MAX}),	LANG("T-sensor T1 type", "Тип датчика T1"), tsensors),
 	pstd(LCP_AccessLvl_Any, 	LCP_ROLiveUpd,	ADC_ValuesF.T1,							((LCP_Decimal32_t){0, 1, 1, 1}),LANG("# T-sensor T1", "# Термодатчик T1"),	"%s°C" ),
@@ -97,7 +96,7 @@ const LCPS_Entry_t PD_InputsConf[] = {
 	pstd(LCP_AccessLvl_Any, 	LCP_Normal,		Config.InputsCfg.T2_Threshold,			((LCP_Uint32_t){0, 250, 1}),	LANG("T2 Threshold (port I8)", "T2 Порог (порт I8)"), "%d°C"),
 	pstd(LCP_AccessLvl_Any, 	LCP_Normal,		Config.InputsCfg.T2_ThrMode, 			((LCP_Enum_t){0, 2}),			LANG("T2 Thr. mode", "T2 Режим порога"), LANG("Normal\nInverted","Норм.\nИнверт.")),
 
-	pbool(LCP_AccessLvl_Any, 	LCP_Normal,Config.InputsCfg.SendControl, 												LANG("CAN-Control", "CAN-Управление"), 0),
+	pbool(LCP_AccessLvl_Any, 	LCP_Normal,		Config.InputsCfg.SendControl, 											LANG("CAN-Control", "CAN-Управление"), 0),
 	pstd(LCP_AccessLvl_Any, 	LCP_Normal,		Config.InputsCfg.SendPorts, 			((LCP_Enum_t){0, 3}),			LANG("CAN-Ports", "CAN-Порты"), "OFF\nCAN 1-8\nCAN 9-16"  ),
 
 };
@@ -112,11 +111,14 @@ const LCPS_Entry_t PD_Func[] = {
 	pstd(LCP_AccessLvl_Any, 	LCP_Normal,		Config.Func.Turns.RightButton, 		((LCP_Enum_t){0, BtMax}),				LANG("Right turn switch", "Кнопка правого поворота"), buttons ),
 	pstd(LCP_AccessLvl_Any, 	LCP_Normal,		Config.Func.Turns.WarningButton, 	((LCP_Enum_t){0, BtMax}),				LANG("Warning switch", "Аварийная кнопка"), buttons ),
 	pstd(LCP_AccessLvl_Any, 	LCP_Normal,		Config.Func.Turns.HighDuty,			((LCP_Uint32_t){0,dutymax,dutystep}),	LANG("Turn brightness", "Яркость поворотников"), "%d%%" ),
-	pstd(LCP_AccessLvl_Any, 	LCP_Normal,		Config.Func.Turns.OnTime,			((LCP_Decimal32_t){1, 10, 1, 1}),		LANG("Turn on-time", "Время вкл. поворотников"), "%ssec" ),
-	pstd(LCP_AccessLvl_Any, 	LCP_Normal,		Config.Func.Turns.OffTime,			((LCP_Decimal32_t){0, 10, 1, 1}),		LANG("Turn off-time", "Время выкл. поворотников"), "%ssec" ),
+	pstd(LCP_AccessLvl_Any, 	LCP_Normal,		Config.Func.Turns.LowDuty ,			((LCP_Uint32_t){0,dutymax,dutystep}),	LANG("Turn off-brightness", "Яркость выкл. поворот."), "%d%%" ),
+	pstd(LCP_AccessLvl_Any, 	LCP_Normal,		Config.Func.Turns.OnTime,			((LCP_Decimal32_t){1, 120, 1, 1}),		LANG("Turn on-time", "Время вкл. поворотников"), "%ssec" ),
+	pstd(LCP_AccessLvl_Any, 	LCP_Normal,		Config.Func.Turns.OffTime,			((LCP_Decimal32_t){0, 120, 1, 1}),		LANG("Turn off-time", "Время выкл. поворотников"), "%ssec" ),
 	label(LCP_AccessLvl_Any, 	LCP_ReadOnly,		LANG("# Brake signal setup #", "# Настройка тормоза #"),	0 ), //
 	pstd(LCP_AccessLvl_Any, 	LCP_Normal,		Config.Func.Brake.LowBrakeDuty,		((LCP_Uint32_t){0,dutymax,dutystep}),	LANG("Off-brake brightness", "Яркость без торможения"), "%d%%" ),
 	pstd(LCP_AccessLvl_Any, 	LCP_Normal,		Config.Func.Brake.HighBrakeDuty,	((LCP_Uint32_t){0,dutymax,dutystep}),	LANG("On-brake brightness", "Яркость торможения"), "%d%%" ),
+	pstd(LCP_AccessLvl_Any, 	LCP_Normal,		Config.Func.Brake.StrobePeriod,		((LCP_Decimal32_t){2, 50, 1, 2}),		LANG("Brake strobe period", "Период мигания тормоза"), "%ssec" ),
+	pstd(LCP_AccessLvl_Any, 	LCP_Normal,		Config.Func.Brake.StrobeCount,		((LCP_Uint32_t){0, 10, 1}),				LANG("Brake strobe count", "Кол-во мигания тормоза"), 0 ),
 	label(LCP_AccessLvl_Any, 	LCP_ReadOnly,		LANG("# Reverse signal setup #", "# Настройка заднего хода #"),	0 ), //
 	pstd(LCP_AccessLvl_Any, 	LCP_Normal,		Config.Func.Reverse.LowDuty,		((LCP_Uint32_t){0,dutymax,dutystep}),	LANG("Off-reverse bright.", "Яркость без з.хода"), "%d%%" ),
 	pstd(LCP_AccessLvl_Any, 	LCP_Normal,		Config.Func.Reverse.HighDuty,		((LCP_Uint32_t){0,dutymax,dutystep}),	LANG("On-reverse bright.", "Яркость заднего хода"), "%d%%" ),
@@ -168,10 +170,10 @@ const LCPS_Entry_t PD_Outputs[] = {
 
 const LCPS_Directory_t PD_Directories[] = {
 	directory(PD_Root, 0, LCP_AccessLvl_Any, 			LANG("uLight", "микроЛайт")),
+	directory(PD_Menu, 0, LCP_AccessLvl_Any, 			LANG("Updates and settings", "Настройки и обновление")),
 	directory(PD_About, 0, LCP_AccessLvl_Any, 			LANG("Device information", "Информация об устройстве")),
 	directory(PD_Inputs, 0, LCP_AccessLvl_Any, 			LANG("Input values", "Значения входов")),
 	directory(PD_Outputs, 0, LCP_AccessLvl_Any,			LANG("Output configuration", "Настройка выходов")),
-	directory(PD_Menu, 0, LCP_AccessLvl_Any, 			LANG("Updates and settings", "Настройки и обновление")),
 	directory(PD_Func, 0, LCP_AccessLvl_Any, 			LANG("Functions setup", "Настройка функций")),
 	directory(PD_InputsConf, 0, LCP_AccessLvl_Any, 		LANG("Inputs configuration", "Настройка входов") ),
 	directory(PD_TsFunctions, TsensFunc_Motor, LCP_AccessLvl_Any,	LANG("Motor T-sensor", "Т-датчик мотора")),

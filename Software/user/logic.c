@@ -15,11 +15,7 @@
 #include <string.h>
 
 typedef struct {
-	struct {
-		uint8_t Brake;
-		int16_t MotorT;
-		int16_t ContrT;
-	} Inputs;
+	uint8_t HazardSwitch;
 	union {
 		uint8_t PWMFunctionOutputs[Func_MAX];
 		struct {
@@ -50,6 +46,7 @@ uint32_t logic_tick = 0;
 LC_Obj_Buttons_t can_buttons = { 0 };
 LC_Obj_Temperature_t can_contrTemp = { 0 };
 logicData_t logicData = { 0 };
+
 //int brightness = 0;
 
 void LogicTick(uint32_t dt) {
@@ -86,8 +83,8 @@ void LogicTick(uint32_t dt) {
 		if (Config.InputsCfg.SendPorts && sent_data >= 20) {
 			static LC_Obj_Buttons_t buttons;
 
-			const LC_ObjectRecord_t btns_send = { .Address = &buttons, .Size = sizeof(buttons), .Attributes.TCP = 0, .Attributes.Priority = LC_Priority_Mid,
-					.NodeID = LC_Broadcast_Address };
+			const LC_ObjectRecord_t btns_send = { .Address = &buttons, .Size = sizeof(buttons), .Attributes.TCP = 0, .Attributes.Priority = LC_Priority_Mid, .NodeID =
+					LC_Broadcast_Address };
 			memset(&buttons, 0, sizeof(buttons));
 
 			if (Config.InputsCfg.SendPorts == 1) {
@@ -136,6 +133,9 @@ void LogicTick(uint32_t dt) {
 
 			logicData.PWM_HighBeam = logicData.PWM_LowBeam;
 		}
+
+		CANdata.Functions.LowBeam = lbt;
+		CANdata.Functions.HighBeam = hbt;
 		//Brightness mode
 		/*switch (Config.InputsCfg.Brightness) {
 		 case Brightness_OFF:
@@ -152,9 +152,36 @@ void LogicTick(uint32_t dt) {
 	}
 
 	{ //Brake
-		if (can_buttons.Brake)
+		static uint8_t brake_strobe_count = 0;
+		static uint32_t brake_timer = 0;
+		static uint8_t brake_state = 0;
+
+		if (can_buttons.Brake) {
+			if (brake_strobe_count < Config.Func.Brake.StrobeCount) {
+				//strobing here
+				brake_timer += dt;
+				if (brake_timer >= Config.Func.Brake.StrobePeriod * 10) {
+					brake_timer = 0;
+
+					//count "OFF" states
+					if (brake_state == 0)
+						brake_strobe_count++;
+
+					brake_state = !brake_state;
+				}
+			} else {
+				//strobe finished, make stable light
+				brake_state = 1;
+			}
+		} else {
+			brake_state = 0;
+			brake_strobe_count = 0;
+			brake_timer = Config.Func.Brake.StrobePeriod * 10; //ready to turn on strobe
+		}
+
+		if (brake_state) {
 			logicData.PWM_Brake = Config.Func.Brake.HighBrakeDuty;
-		else
+		} else
 			logicData.PWM_Brake = Config.Func.Brake.LowBrakeDuty;
 	}
 
@@ -175,7 +202,8 @@ void LogicTick(uint32_t dt) {
 	{ // turn
 		static uint32_t turn_timer = 0;
 		static uint8_t state = 0;
-		uint8_t any_button = getButton(Config.Func.Turns.LeftButton) | getButton(Config.Func.Turns.RightButton) | getButton(Config.Func.Turns.WarningButton);
+		logicData.HazardSwitch = getButton(Config.Func.Turns.WarningButton);
+		uint8_t any_button = getButton(Config.Func.Turns.LeftButton) | getButton(Config.Func.Turns.RightButton) | logicData.HazardSwitch;
 		if (any_button) {
 			turn_timer += dt;
 
@@ -199,18 +227,25 @@ void LogicTick(uint32_t dt) {
 			state = 0;
 		}
 
-		if (state == 0 && (getButton(Config.Func.Turns.LeftButton) || getButton(Config.Func.Turns.WarningButton)))
+		if (state == 0 && (getButton(Config.Func.Turns.LeftButton) || getButton(Config.Func.Turns.WarningButton))) {
 			logicData.PWM_TurnLeft = Config.Func.Turns.HighDuty;
-		else
-			logicData.PWM_TurnLeft = 0;
+			CANdata.Functions.TurnLeft = 1;
+		} else {
+			logicData.PWM_TurnLeft = Config.Func.Turns.LowDuty;
+			CANdata.Functions.TurnLeft = 0;
+		}
 
-		if (state == 0 && (getButton(Config.Func.Turns.RightButton) || getButton(Config.Func.Turns.WarningButton)))
+		if (state == 0 && (getButton(Config.Func.Turns.RightButton) || getButton(Config.Func.Turns.WarningButton))) {
 			logicData.PWM_TurnRight = Config.Func.Turns.HighDuty;
-		else
-			logicData.PWM_TurnRight = 0;
+			CANdata.Functions.TurnRight = 1;
+		} else {
+			logicData.PWM_TurnRight = Config.Func.Turns.LowDuty;
+			CANdata.Functions.TurnRight = 0;
+		}
 	}
 
 	{ //FAN control
+		int fanActive = 0;
 		for (int i = 0; i < TsensFunc_MAX; i++) {
 			int16_t input = 234;
 			switch (i) {
@@ -229,12 +264,16 @@ void LogicTick(uint32_t dt) {
 			}
 			int ratio = utils_map_int(input, (int) Config.Func.FanConrol.Tmin[i] * 10, (int) Config.Func.FanConrol.Tmax[i] * 10, Config.Func.FanConrol.OutMin[i],
 					Config.Func.FanConrol.OutMax[i]);
-			if (ratio < Config.Func.FanConrol.OutMin[i])
+			if (ratio < Config.Func.FanConrol.OutMin[i]) {
 				ratio = Config.Func.FanConrol.OutMin[i];
+			} else {
+				fanActive = 1;
+			}
 			if (ratio > Config.Func.FanConrol.OutMax[i])
 				ratio = Config.Func.FanConrol.OutMax[i];
 			logicData.PWMFunctionOutputs[Func_MotorT + i] = ratio;
 		}
+		CANdata.Functions.FanActive = fanActive;
 	}
 
 	if (Config.Func.AloneCANshutdown) {
@@ -253,10 +292,11 @@ void LogicTick(uint32_t dt) {
 	}
 	//apply pwm based on function
 	for (int i = 0; i < 10; i++) {
-		if (shutdown) {
+		uint8_t function = Config.PWMouts.PWMoutArray[i];
+		//hazard switch works at shutdown
+		if (shutdown && ((logicData.HazardSwitch && (function == Func_TurnLeft || function == Func_TurnRight))) == 0) {
 			PWMsetOutput(i, 0);
 		} else {
-			uint8_t function = Config.PWMouts.PWMoutArray[i];
 			if (function == 2) {
 				//button logic here
 				PWMsetOutput(i, logicData.PWMFunctionOutputs[function]);
@@ -264,6 +304,14 @@ void LogicTick(uint32_t dt) {
 				//classic function output
 				PWMsetOutput(i, logicData.PWMFunctionOutputs[function]);
 		}
+	}
+	{	//CAN information
+		CANdata.Temp.InternalTemp = ADC_ValuesF.Tint;
+		CANdata.Temp.ExtraTemp1 = ADC_ValuesF.T1;
+		CANdata.Temp.ExtraTemp2 = ADC_ValuesF.T2;
+
+		CANdata.Supply.Voltage = ADC_ValuesF.V12;
+		CANdata.Supply.Current = ADC_ValuesF.Amp;
 	}
 }
 
@@ -284,7 +332,7 @@ void LogicProcessData(LC_NodeDescriptor_t *node, LC_Header_t header, void *data,
 	switch (header.MsgID) {
 	case LC_Obj_ActiveFunctions: {
 		LC_Obj_ActiveFunctions_t *func = data;
-		buttons.Brake |= func->Brake;
+		buttons.Brake |= func->BrakeSignal;
 		buttons.Reverse |= func->Reverse;
 	}
 		break;

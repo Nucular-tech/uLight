@@ -13,6 +13,7 @@
 #include "Data/parameters.h"
 #include "Data/hwconfig.h"
 
+#include "network.h"
 #include "can_hal.h"
 #include "levcan.h"
 #include "levcan_objects.h"
@@ -27,14 +28,24 @@ extern const LCPS_Directory_t PD_Directories[];
 extern const uint32_t PD_Directories_size;
 
 void networkShutdown(LC_NodeDescriptor_t *node, LC_Header_t header, void *data, int32_t size);
+void networkTest(LC_NodeDescriptor_t *node, LC_Header_t header, void *data, int32_t size);
 
+CANData_t CANdata;
+// @formatter:off
 const LC_Object_t light_node_obj[] = { //
-		{ LC_SYS_Shutdown, { .Readable = 1, .Writable = 1, .Function = 1 }, 0, &networkShutdown },		//
-		{ LC_SYS_SWUpdate, { .Writable = 1, .Function = 1 }, 4, &proceedSWU }, //
-		{ LC_Obj_ActiveFunctions, { .Writable = 1, .Function = 1 }, sizeof(LC_Obj_ActiveFunctions_t), &LogicProcessData }, //
-		{ LC_Obj_Temperature, { .Writable = 1, .Function = 1 }, sizeof(LC_Obj_Temperature_t), &LogicProcessData }, //
-		{ LC_Obj_Buttons, { .Writable = 1, .Function = 1 }, sizeof(LC_Obj_Buttons_t), &LogicProcessData }, //
-		};
+		{ LC_SYS_Shutdown, 			{ .Readable = 1, .Writable = 1, .Function = 1 }, 0, &networkShutdown },		//
+#ifdef DEBUG
+		{ LC_SYS_Trace, 			{ .Readable = 1, .Function = 1 }, 8, &networkTest },		//
+#endif
+		{ LC_SYS_SWUpdate, 			{ .Writable = 1, .Function = 1 }, 4, &proceedSWU }, //
+		{ LC_Obj_ActiveFunctions, 	{ .Writable = 1, .Function = 1 }, sizeof(LC_Obj_ActiveFunctions_t), &LogicProcessData }, //
+		{ LC_Obj_Temperature, 		{ .Writable = 1, .Function = 1 }, sizeof(LC_Obj_Temperature_t), &LogicProcessData }, //
+		{ LC_Obj_Buttons, 			{ .Writable = 1, .Function = 1 }, sizeof(LC_Obj_Buttons_t), &LogicProcessData }, //
+		{ LC_Obj_Temperature, 		{ .Readable = 1 }, sizeof(LC_Obj_Temperature_t), 	&CANdata.Temp }, //
+		{ LC_Obj_DCSupply, 			{ .Readable = 1 }, sizeof(LC_Obj_Supply_t), 		&CANdata.Supply }, //
+		{ LC_Obj_ActiveFunctions, 	{ .Readable = 1 }, sizeof(LC_Obj_ActiveFunctions_t), &CANdata.Functions }, //
+};
+// @formatter:on
 const uint16_t light_node_obj_size = sizeof(light_node_obj) / sizeof(light_node_obj[0]);
 
 const LC_DriverCalls_t nodeDrv = { LC_HAL_Send, LC_HAL_CreateFilterMasks, LC_HAL_TxHalfFull };
@@ -101,7 +112,7 @@ void Network_Update(uint32_t tick) {
 	nm++;
 	LC_ReceiveManager(&LevcanNode);
 	//manager should work quickly to free levcan message objects
-	LC_NetworkManager(&LevcanNode, tick );
+	LC_NetworkManager(&LevcanNode, tick);
 }
 
 void networkShutdown(LC_NodeDescriptor_t *node, LC_Header_t header, void *data, int32_t size) {

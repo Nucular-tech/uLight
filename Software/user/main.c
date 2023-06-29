@@ -23,7 +23,7 @@
 #define sDEBUG(string) string
 #endif
 
-const Version_t VersionControl = { __DATE__, sDEBUG("0.6.3") };
+const Version_t VersionControl = { __DATE__, sDEBUG("0.6.4") };
 
 typedef struct {
 	uint32_t GoToBoot;
@@ -292,13 +292,13 @@ void EXTI1_IRQHandler(void) {
 	if (RD.Menu.ImportConf > 0 && RD.Menu.ImportConf < 10) {
 		int num = RD.Menu.ImportConf;
 		RD.Menu.ImportConf = 10;
-		//ImportConfig(num);
+		ImportConfig(num);
 		RD.Menu.ImportConf = 0;
 	}
 	if (RD.Menu.ExportConf > 0 && RD.Menu.ImportConf < 10) {
 		int num = RD.Menu.ExportConf;
 		RD.Menu.ExportConf = 10;
-		//ExportConfig(num);
+		ExportConfig(num);
 		RD.Menu.ExportConf = 0;
 	}
 }

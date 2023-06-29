@@ -5,17 +5,16 @@
  *      Author: VasiliSk
  */
 
-
 #include "levcan_objects.h"
 
 #pragma once
 
 typedef enum {
 	Dir_ROOT,
+	Dir_Menu,
 	Dir_About,
 	Dir_Inputs,
 	Dir_Outputs,
-	Dir_Menu,
 	Dir_Func,
 	Dir_InputsConf,
 	Dir_TsFunctions1,
@@ -78,7 +77,7 @@ typedef enum {
 } Function_t;
 
 typedef enum {
-	Tsensor_OFF, Tsensor_NTC10K3950, Tsensor_NTC10K3380, Tsensor_MAX
+	Tsensor_OFF, Tsensor_NTC10K3950, Tsensor_NTC10K3380, Tsensor_KTY84_130, Tsensor_MAX
 } Tsensor_t;
 
 typedef enum {
@@ -101,6 +100,7 @@ typedef struct {
 			Buttons_t RightButton;
 			Buttons_t WarningButton;
 			uint8_t HighDuty;
+			uint8_t LowDuty;
 			uint8_t OffTime;
 			uint8_t OnTime;
 		} Turns;
@@ -113,6 +113,8 @@ typedef struct {
 		struct {
 			uint8_t LowBrakeDuty;
 			uint8_t HighBrakeDuty;
+			uint8_t StrobePeriod;
+			uint8_t StrobeCount;
 		} Brake;
 
 		struct {
@@ -250,3 +252,5 @@ extern volatile RuntimeStruct_t RD;
 extern const uint16_t PWMIO_Freq[];
 
 void LoadDefaultParameters(void);
+void ExportConfig(int index);
+void ImportConfig(int index);
