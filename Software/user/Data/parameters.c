@@ -8,10 +8,18 @@
 #include <levcan_paramcommon.h>
 #include <levcan_paramserver.h>
 #include <network.h>
+#include <Resconfig.h>
 #include <stdio.h>
+#include <storage.h>
 #include <string.h>
 #include <sys/_stdint.h>
 #include <sys/types.h>
+
+//number of pages in bank
+#define FLASH_ADDRES_BANK0  (intptr_t*)(&__storage_start__)
+#define FLASH_ADDRES_BANK1 (intptr_t*)((uint32_t)(&__storage_start__) + FLASH_PAGE_SIZE_DATA * FLASH_PAGES_IN_BANK)
+//ld scripts global varibles
+extern unsigned int __storage_start__;
 
 volatile ConfigStruct_t Config;
 volatile DataStruct_t Data;
@@ -19,9 +27,14 @@ volatile LifeDataStruct_t LifeData;
 volatile RuntimeStruct_t RD = { 0 };
 
 char rdata[512];
+// @formatter:off
+const StorageData_t Storagedata[Struct_number] = { //
+		{ sizeof(Data),		 	1, (intptr_t*) &Data }, //
+		{ sizeof(Config), 		1, (intptr_t*) &Config }, //
+		{ sizeof(LifeData), 	0, (intptr_t*) &LifeData }, //
+};
+// @formatter:on
 
-const intptr_t *Storage_Address[Save_number] = { (intptr_t*) &Data, (intptr_t*) &Config, (intptr_t*) &LifeData };
-const uint16_t Storage_Size[Save_number] = { sizeof(Data), sizeof(Config), sizeof(LifeData) };
 const uint16_t PWMIO_Freq[] = { 100, 500, 1000, 5000, 10000, 24000 };
 
 void LoadDefaultParameters(void) {
@@ -77,6 +90,14 @@ void LoadDefaultParameters(void) {
 		Config.Func.FanConrol.Tmax[i] = 60;
 		Config.Func.FanConrol.OutMin[i] = 0;
 		Config.Func.FanConrol.OutMax[i] = 100;
+	}
+}
+
+void LoadStorage(void) {
+	Storage_Init(Storagedata, Struct_number, FLASH_ADDRES_BANK0, FLASH_ADDRES_BANK1);
+
+	for (uint8_t i = 0; i < Struct_number; i++) {
+		Storage_LoadData(i);
 	}
 }
 
@@ -198,7 +219,7 @@ void ImportConfig(int index) {
 		if (header_catch && (br < read || active_data > 120) && active_data > 0) {
 			//skip blank
 			const char *line = rdatpointer;
-			for (; isspace((uint8_t) *line); line++)
+			for (; isspace((uint8_t ) *line); line++)
 				;
 			uint linelength = strcspn(line, "\n\r");
 			//limit size

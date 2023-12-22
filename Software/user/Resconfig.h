@@ -11,7 +11,6 @@
 #include "Peripherial/gpio_user.h"
 #include "Peripherial/gpio_hal.h"
 
-
 #define STM32F1
 
 //saves
@@ -30,16 +29,7 @@
 #define CAN_RX_BUFFER_SIZE 20
 //number of messages for queue Requests
 #define CAN_REQ_BUFFER_SIZE 0
-//connectivity line CPUs
-//#define ConnectivityLine
-//__attribute__ ((section(".sram")))
+
 #define SRAM __attribute__ ((section(".sram")))
-//#define SRAM2 __attribute__ ((section(".exram")))
 
-#define PARAM_DIRECTORIES PD_Directories
-#define PARAM_DIRECTORIES_SIZE PD_Directories_size
-#define PARAM_NAME_LENGTH	24
 #define STORAGE_CRC
-
-#define FRONTEND
-#define BACKEND

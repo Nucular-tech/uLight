@@ -115,6 +115,7 @@ typedef struct {
 			uint8_t HighBrakeDuty;
 			uint8_t StrobePeriod;
 			uint8_t StrobeCount;
+			uint8_t Button;
 		} Brake;
 
 		struct {
@@ -252,5 +253,6 @@ extern volatile RuntimeStruct_t RD;
 extern const uint16_t PWMIO_Freq[];
 
 void LoadDefaultParameters(void);
+void LoadStorage(void);
 void ExportConfig(int index);
 void ImportConfig(int index);

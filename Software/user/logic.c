@@ -87,6 +87,7 @@ void LogicTick(uint32_t dt) {
 					LC_Broadcast_Address };
 			memset(&buttons, 0, sizeof(buttons));
 
+			buttons.Reverse=1;
 			if (Config.InputsCfg.SendPorts == 1) {
 				buttons.ExButton1 = RD.Buttons.Int1;
 				buttons.ExButton2 = RD.Buttons.Int2;
@@ -156,7 +157,8 @@ void LogicTick(uint32_t dt) {
 		static uint32_t brake_timer = 0;
 		static uint8_t brake_state = 0;
 
-		if (can_buttons.Brake) {
+
+		if (can_buttons.Brake || getButton(Config.Func.Brake.Button)) {
 			if (brake_strobe_count < Config.Func.Brake.StrobeCount) {
 				//strobing here
 				brake_timer += dt;

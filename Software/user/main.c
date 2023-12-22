@@ -23,7 +23,7 @@
 #define sDEBUG(string) string
 #endif
 
-const Version_t VersionControl = { __DATE__, sDEBUG("0.6.4") };
+const Version_t VersionControl = { __DATE__, sDEBUG("0.6.5") };
 
 typedef struct {
 	uint32_t GoToBoot;
@@ -63,14 +63,8 @@ int main(int argc, char *argv[]) {
 	trace_printf("System clock: %u Hz\n", SystemCoreClock);
 
 	LoadDefaultParameters();
-	Storage_Init();
 	RCC_user_init();
-	//port settings loaded here
-	for (uint8_t i = 0; i < Save_number; i++) {
-		if (Storage_LoadData(i) == ERROR) {
-			Storage_SaveData(i); //length mismatch
-		}
-	}
+	LoadStorage();
 
 	PWMoutInit();
 	GPIO_user_init();

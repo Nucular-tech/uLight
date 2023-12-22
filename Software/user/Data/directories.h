@@ -115,10 +115,11 @@ const LCPS_Entry_t PD_Func[] = {
 	pstd(LCP_AccessLvl_Any, 	LCP_Normal,		Config.Func.Turns.OnTime,			((LCP_Decimal32_t){1, 120, 1, 1}),		LANG("Turn on-time", "Время вкл. поворотников"), "%ssec" ),
 	pstd(LCP_AccessLvl_Any, 	LCP_Normal,		Config.Func.Turns.OffTime,			((LCP_Decimal32_t){0, 120, 1, 1}),		LANG("Turn off-time", "Время выкл. поворотников"), "%ssec" ),
 	label(LCP_AccessLvl_Any, 	LCP_ReadOnly,		LANG("# Brake signal setup #", "# Настройка тормоза #"),	0 ), //
+	pstd(LCP_AccessLvl_Any, 	LCP_Normal,		Config.Func.Brake.Button, 			((LCP_Enum_t){0, BtMax}),				LANG("Brake button", "Кнопка тормоза"), buttons ),
 	pstd(LCP_AccessLvl_Any, 	LCP_Normal,		Config.Func.Brake.LowBrakeDuty,		((LCP_Uint32_t){0,dutymax,dutystep}),	LANG("Off-brake brightness", "Яркость без торможения"), "%d%%" ),
 	pstd(LCP_AccessLvl_Any, 	LCP_Normal,		Config.Func.Brake.HighBrakeDuty,	((LCP_Uint32_t){0,dutymax,dutystep}),	LANG("On-brake brightness", "Яркость торможения"), "%d%%" ),
 	pstd(LCP_AccessLvl_Any, 	LCP_Normal,		Config.Func.Brake.StrobePeriod,		((LCP_Decimal32_t){2, 50, 1, 2}),		LANG("Brake strobe period", "Период мигания тормоза"), "%ssec" ),
-	pstd(LCP_AccessLvl_Any, 	LCP_Normal,		Config.Func.Brake.StrobeCount,		((LCP_Uint32_t){0, 10, 1}),				LANG("Brake strobe count", "Кол-во мигания тормоза"), 0 ),
+	pstd(LCP_AccessLvl_Any, 	LCP_Normal,		Config.Func.Brake.StrobeCount,		((LCP_Uint32_t){0, 10, 1}),				LANG("Brake strobe count", "Кол-во миганий тормоза"), 0 ),
 	label(LCP_AccessLvl_Any, 	LCP_ReadOnly,		LANG("# Reverse signal setup #", "# Настройка заднего хода #"),	0 ), //
 	pstd(LCP_AccessLvl_Any, 	LCP_Normal,		Config.Func.Reverse.LowDuty,		((LCP_Uint32_t){0,dutymax,dutystep}),	LANG("Off-reverse bright.", "Яркость без з.хода"), "%d%%" ),
 	pstd(LCP_AccessLvl_Any, 	LCP_Normal,		Config.Func.Reverse.HighDuty,		((LCP_Uint32_t){0,dutymax,dutystep}),	LANG("On-reverse bright.", "Яркость заднего хода"), "%d%%" ),
