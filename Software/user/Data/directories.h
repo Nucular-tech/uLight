@@ -10,7 +10,7 @@
 #include "parameters.h"
 #include "adc.h"
 
-//extern const LCPS_Entry_t PD_Root[];
+//Pointers to reference
 extern LCPS_Entry_t PD_Root[], PD_About[];
 extern const LCPS_Entry_t PD_Inputs[], PD_Outputs[], PD_Menu[], PD_Func[], PD_InputsConf[], PD_TsFunctions[];
 
@@ -169,6 +169,7 @@ const LCPS_Entry_t PD_Outputs[] = {
 	pstd(LCP_AccessLvl_Any, 	LCP_Normal,		Config.PWMouts.IO4out, 				((LCP_Enum_t){0, Func_MAX}),		LANG("Output P4", "Выход P4"), 	functions ),
 };
 
+//All directories and it's names
 const LCPS_Directory_t PD_Directories[] = {
 	directory(PD_Root, 0, LCP_AccessLvl_Any, 			LANG("uLight", "микроЛайт")),
 	directory(PD_Menu, 0, LCP_AccessLvl_Any, 			LANG("Updates and settings", "Настройки и обновление")),
