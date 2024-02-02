@@ -21,7 +21,6 @@ typedef struct {
 		struct {
 			uint8_t PWM_Off;
 			uint8_t PWM_On;
-			uint8_t PWM_Button;
 			uint8_t PWM_TurnLeft;
 			uint8_t PWM_TurnRight;
 			uint8_t PWM_Brake;
@@ -33,6 +32,10 @@ typedef struct {
 			uint8_t PWM_ContrT;
 			uint8_t PWM_T1;
 			uint8_t PWM_T2;
+			uint8_t PWM_Button1;
+			uint8_t PWM_Button2;
+			uint8_t PWM_Button3;
+			uint8_t PWM_Button4;
 		};
 	};
 } logicData_t;
@@ -40,14 +43,12 @@ typedef struct {
 //local functions
 int utils_map_int(int x, int in_min, int in_max, int out_min, int out_max);
 uint8_t getButton(uint8_t button);
+
 //variables
-//const char functions[] = "OFF\nON\nBTTN\nTL\nTR\nBK";
 uint32_t logic_tick = 0;
 LC_Obj_Buttons_t can_buttons = { 0 };
 LC_Obj_Temperature_t can_contrTemp = { 0 };
 logicData_t logicData = { 0 };
-
-//int brightness = 0;
 
 void LogicTick(uint32_t dt) {
 	logic_tick += dt;
@@ -87,7 +88,7 @@ void LogicTick(uint32_t dt) {
 					LC_Broadcast_Address };
 			memset(&buttons, 0, sizeof(buttons));
 
-			buttons.Reverse=1;
+			buttons.Reverse = 1;
 			if (Config.InputsCfg.SendPorts == 1) {
 				buttons.ExButton1 = RD.Buttons.Int1;
 				buttons.ExButton2 = RD.Buttons.Int2;
@@ -114,6 +115,16 @@ void LogicTick(uint32_t dt) {
 			sent_data = 0;
 		}
 	}
+
+	{	//Math logic functions
+		uint8_t a = getButton(Config.Logic.Input1a);
+		uint8_t b = getButton(Config.Logic.Input1b);
+		RD.Buttons.AND1 = a & b;
+		RD.Buttons.NOT1 = !a;
+		RD.Buttons.OR1 = a | b;
+		RD.Buttons.XOR1 = a ^ b;
+	}
+
 	{	//Beam function
 		int lbt = getButton(Config.Func.Beam.LowBeamButton);
 		int hbt = getButton(Config.Func.Beam.HighBeamButton);
@@ -137,26 +148,12 @@ void LogicTick(uint32_t dt) {
 
 		CANdata.Functions.LowBeam = lbt;
 		CANdata.Functions.HighBeam = hbt;
-		//Brightness mode
-		/*switch (Config.InputsCfg.Brightness) {
-		 case Brightness_OFF:
-		 brightness=0;
-		 break;
-		 case Brightness_BeamLow:
-		 brightness = lbt;
-		 break;
-		 case Brightness_BeamHigh:
-		 brightness = hbt;
-		 break;
-		 }*/
-
 	}
 
 	{ //Brake
 		static uint8_t brake_strobe_count = 0;
 		static uint32_t brake_timer = 0;
 		static uint8_t brake_state = 0;
-
 
 		if (can_buttons.Brake || getButton(Config.Func.Brake.Button)) {
 			if (brake_strobe_count < Config.Func.Brake.StrobeCount) {
@@ -278,6 +275,28 @@ void LogicTick(uint32_t dt) {
 		CANdata.Functions.FanActive = fanActive;
 	}
 
+	{ // Button Functions
+		if (getButton(Config.Func.Signal.B1))
+			logicData.PWM_Button1 = Config.Func.Signal.DutyOn1;
+		else
+			logicData.PWM_Button1 = Config.Func.Signal.DutyOff1;
+
+		if (getButton(Config.Func.Signal.B2))
+			logicData.PWM_Button2 = Config.Func.Signal.DutyOn2;
+		else
+			logicData.PWM_Button2 = Config.Func.Signal.DutyOff2;
+
+		if (getButton(Config.Func.Signal.B3))
+			logicData.PWM_Button3 = Config.Func.Signal.DutyOn3;
+		else
+			logicData.PWM_Button3 = Config.Func.Signal.DutyOff3;
+
+		if (getButton(Config.Func.Signal.B4))
+			logicData.PWM_Button4 = Config.Func.Signal.DutyOn4;
+		else
+			logicData.PWM_Button4 = Config.Func.Signal.DutyOff4;
+	}
+
 	if (Config.Func.AloneCANshutdown) {
 		uint16_t pos = 0;
 		LC_NodeShortName_t nname = { 0 };
@@ -299,12 +318,8 @@ void LogicTick(uint32_t dt) {
 		if (shutdown && ((logicData.HazardSwitch && (function == Func_TurnLeft || function == Func_TurnRight))) == 0) {
 			PWMsetOutput(i, 0);
 		} else {
-			if (function == 2) {
-				//button logic here
-				PWMsetOutput(i, logicData.PWMFunctionOutputs[function]);
-			} else
-				//classic function output
-				PWMsetOutput(i, logicData.PWMFunctionOutputs[function]);
+			//classic function output
+			PWMsetOutput(i, logicData.PWMFunctionOutputs[function]);
 		}
 	}
 	{	//CAN information

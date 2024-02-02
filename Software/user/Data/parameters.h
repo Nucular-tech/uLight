@@ -55,13 +55,16 @@ typedef enum {
 	BtExt_14,
 	BtExt_15,
 	BtExt_16,
+	BtAnd_1,
+	BtNot_1,
+	BtOr_1,
+	BtXor_1,
 	BtMax,
 } Buttons_t;
 
 typedef enum {
 	Func_Off,
 	Func_On,
-	Func_Button,
 	Func_TurnLeft,
 	Func_TurnRight,
 	Func_Brake,
@@ -73,6 +76,10 @@ typedef enum {
 	Func_ContrT,
 	Func_T1,
 	Func_T2,
+	Func_Signal1,
+	Func_Signal2,
+	Func_Signal3,
+	Func_Signal4,
 	Func_MAX,
 } Function_t;
 
@@ -141,6 +148,20 @@ typedef struct {
 			uint8_t OutMax[TsensFunc_MAX];
 		} FanConrol;
 
+		struct {
+			Buttons_t B1;
+			Buttons_t B2;
+			Buttons_t B3;
+			Buttons_t B4;
+			uint8_t DutyOn1;
+			uint8_t DutyOff1;
+			uint8_t DutyOn2;
+			uint8_t DutyOff2;
+			uint8_t DutyOn3;
+			uint8_t DutyOff3;
+			uint8_t DutyOn4;
+			uint8_t DutyOff4;
+		} Signal;
 		uint8_t AloneCANshutdown;
 	} Func;
 
@@ -179,10 +200,12 @@ typedef struct {
 		uint16_t ThrottleMax;
 		uint16_t BrakeMin;
 		uint16_t BrakeMax;
-		/*enum {
-		 Brightness_OFF, Brightness_BeamLow, Brightness_BeamHigh
-		 } Brightness;*/
 	} InputsCfg;
+
+	struct{
+		Buttons_t Input1a;
+		Buttons_t Input1b;
+	} Logic;
 
 } ConfigStruct_t;
 
@@ -241,6 +264,10 @@ typedef struct {
 			uint8_t Ext14;
 			uint8_t Ext15;
 			uint8_t Ext16;
+			uint8_t AND1;
+			uint8_t NOT1;
+			uint8_t OR1;
+			uint8_t XOR1;
 		};
 	} Buttons;
 

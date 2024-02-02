@@ -30,7 +30,7 @@ extern void assert_failed(char *file, uint32_t line);
 #define configASSERT(x)     if( ( x ) == 0 ) { assert_failed(__FILE__, __LINE__); for( ;; ); }
 
 #define LEVCAN_FILECLIENT
-#define LEVCAN_PARAMETERS
+#define LEVCAN_PARAMETERS_SERVER
 #define LEVCAN_PARAMETERS_PARSING
 //Float-point support
 //#define LEVCAN_USE_FLOAT
