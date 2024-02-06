@@ -172,10 +172,12 @@ void LogicTick(uint32_t dt) {
 				//strobe finished, make stable light
 				brake_state = 1;
 			}
+			RD.Buttons.Brake = 1; //virtual input button, may lag a bit
 		} else {
 			brake_state = 0;
 			brake_strobe_count = 0;
 			brake_timer = Config.Func.Brake.StrobePeriod * 10; //ready to turn on strobe
+			RD.Buttons.Brake = 0;
 		}
 
 		if (brake_state) {

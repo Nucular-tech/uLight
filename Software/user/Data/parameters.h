@@ -55,6 +55,7 @@ typedef enum {
 	BtExt_14,
 	BtExt_15,
 	BtExt_16,
+	BtBrake,
 	BtAnd_1,
 	BtNot_1,
 	BtOr_1,
@@ -264,6 +265,7 @@ typedef struct {
 			uint8_t Ext14;
 			uint8_t Ext15;
 			uint8_t Ext16;
+			uint8_t Brake;
 			uint8_t AND1;
 			uint8_t NOT1;
 			uint8_t OR1;

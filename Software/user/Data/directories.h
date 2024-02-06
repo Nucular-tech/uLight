@@ -30,7 +30,7 @@ uint32_t dummy;
 #define LCP_NLiveUpd (LCP_Normal | LCP_LiveUpdate)
 
 const LCP_Uint32_t zeroU32_t = { 0, 0, 0 };
-const char buttons[] = "Off\nON\nI1\nI2\nI3\nI4\nI5\nI6\nI7_T1\nI8_T2\nC1\nC2\nC3\nC4\nC5\nC6\nC7\nC8\nC9\nC10\nC11\nC12\nC13\nC14\nC15\nC16\nAND\nNOT\nOR\nXOR";
+const char buttons[] = "Off\nON\nI1\nI2\nI3\nI4\nI5\nI6\nI7_T1\nI8_T2\nC1\nC2\nC3\nC4\nC5\nC6\nC7\nC8\nC9\nC10\nC11\nC12\nC13\nC14\nC15\nC16\nBrk\nAND\nNOT\nOR\nXOR";
 const char conf_imports[] = LANG("?\n1\n2\n3\n4\n5\n6\n7\n8\n9\nLoading...", "?\n1\n2\n3\n4\n5\n6\n7\n8\n9\nЗагрузка...");
 const char tsensors[] = "Off\nNTC10K3950\nNTC10K3380\nKTY84/130";
 const char freqs[] = "100Hz\n500Hz\n1kHz\n5kHz\n10kHz\n24kHz(FAN)";
