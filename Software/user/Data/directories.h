@@ -34,7 +34,8 @@ const char buttons[] = "Off\nON\nI1\nI2\nI3\nI4\nI5\nI6\nI7_T1\nI8_T2\nC1\nC2\nC
 const char conf_imports[] = LANG("?\n1\n2\n3\n4\n5\n6\n7\n8\n9\nLoading...", "?\n1\n2\n3\n4\n5\n6\n7\n8\n9\nЗагрузка...");
 const char tsensors[] = "Off\nNTC10K3950\nNTC10K3380\nKTY84/130";
 const char freqs[] = "100Hz\n500Hz\n1kHz\n5kHz\n10kHz\n24kHz(FAN)";
-const char functions[] = LANG("OFF\nON\nTurnL\nTurnR\nBrk\nLBeam\nHBeam\nRev\nHorn\nTMot\nTCont\nT1\nT2\nS1\nS2\nS3\nS4", "Откл\nВкл\nПовЛ\nПовП\nТорм\nБлижС\nДалС\nЗ.ход\nГудок\nTМот\nTКонт\nT1\nT2\nS1\nS2\nS3\nS4");
+const char functions[] = LANG("OFF\nON\nTurnL\nTurnR\nBrk\nLBeam\nHBeam\nRev\nHorn\nTMot\nTCont\nT1\nT2\nS1\nS2\nS3\nS4",
+		"Откл\nВкл\nПовЛ\nПовП\nТорм\nБлижС\nДалС\nЗ.ход\nГудок\nTМот\nTКонт\nT1\nT2\nS1\nS2\nS3\nS4");
 
 // @formatter:off
 LCPS_Entry_t PD_Root[]
@@ -106,8 +107,8 @@ const LCPS_Entry_t PD_InputsConf[] = {
 
 	label(LCP_AccessLvl_Any, 	LCP_ReadOnly,	LANG("# Logic buttons #", "# Логические кнопки #"),	0 ), //
 	label(LCP_AccessLvl_Any, 	LCP_ReadOnly,	"# AND, NOT, OR, XOR #", 0 ), //
-	pstd(LCP_AccessLvl_Any, 	LCP_Normal,		Config.Logic.Input1a, 					((LCP_Enum_t){0, BtMax}),		LANG("Input A", "Вход А"), buttons ),
-	pstd(LCP_AccessLvl_Any, 	LCP_Normal,		Config.Logic.Input1b, 					((LCP_Enum_t){0, BtMax}),		LANG("Input B", "Вход Б"), buttons ),
+	pstd(LCP_AccessLvl_Any, 	LCP_Normal,		Config.Logic.Input1a, 					((LCP_Enum_t){0, BtMax-4}),		LANG("Input A", "Вход А"), buttons ),
+	pstd(LCP_AccessLvl_Any, 	LCP_Normal,		Config.Logic.Input1b, 					((LCP_Enum_t){0, BtMax-4}),		LANG("Input B", "Вход Б"), buttons ),
 };
 
 #define dutymax   100

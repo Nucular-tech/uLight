@@ -88,7 +88,7 @@ void LogicTick(uint32_t dt) {
 					LC_Broadcast_Address };
 			memset(&buttons, 0, sizeof(buttons));
 
-			buttons.Reverse = 1;
+			buttons.Lock = 1;
 			if (Config.InputsCfg.SendPorts == 1) {
 				buttons.ExButton1 = RD.Buttons.Int1;
 				buttons.ExButton2 = RD.Buttons.Int2;
