@@ -47,6 +47,7 @@ uint8_t getButton(uint8_t button);
 //variables
 uint32_t logic_tick = 0;
 LC_Obj_Buttons_t can_buttons = { 0 };
+uint8_t can_converter_mode = 0;
 LC_Obj_Temperature_t can_contrTemp = { 0 };
 logicData_t logicData = { 0 };
 
@@ -54,7 +55,7 @@ void LogicTick(uint32_t dt) {
 	logic_tick += dt;
 	logicData.PWM_Off = 0;
 	logicData.PWM_On = 100;
-	int shutdown = 0;
+	int shutdown = getButton(Config.Func.ShutdownByButton);
 	{	//Control
 		static uint16_t sent_data = 0;
 		sent_data += dt;
@@ -299,7 +300,7 @@ void LogicTick(uint32_t dt) {
 			logicData.PWM_Button4 = Config.Func.Signal.DutyOff4;
 	}
 
-	if (Config.Func.AloneCANshutdown) {
+	if (Config.Func.ShutdownByCAN) {
 		uint16_t pos = 0;
 		LC_NodeShortName_t nname = { 0 };
 		int controller_or_lcd = 0;
@@ -311,7 +312,10 @@ void LogicTick(uint32_t dt) {
 			}
 		} while (nname.NodeID != LC_Broadcast_Address);
 
-		shutdown = !controller_or_lcd;
+		shutdown |= !controller_or_lcd;
+	}
+	if (Config.Func.ShutdownOnCharge) {
+		shutdown |= can_converter_mode;
 	}
 	//apply pwm based on function
 	for (int i = 0; i < 10; i++) {
@@ -345,6 +349,7 @@ void LogicProcessData(LC_NodeDescriptor_t *node, LC_Header_t header, void *data,
 	(void) node;
 	(void) size;
 	static uint32_t last_tick_updated = 0;
+	static uint8_t converter_mode = 0;
 	static LC_Obj_Buttons_t buttons = { 0 };
 	static LC_Obj_Temperature_t controller_temp = { INT16_MIN, INT16_MIN, INT16_MIN, INT16_MIN };
 
@@ -353,6 +358,7 @@ void LogicProcessData(LC_NodeDescriptor_t *node, LC_Header_t header, void *data,
 		LC_Obj_ActiveFunctions_t *func = data;
 		buttons.Brake |= func->BrakeSignal;
 		buttons.Reverse |= func->Reverse;
+		converter_mode |= func->ConverterMode;
 	}
 		break;
 	case LC_Obj_Buttons: {
@@ -378,15 +384,18 @@ void LogicProcessData(LC_NodeDescriptor_t *node, LC_Header_t header, void *data,
 		//20hz can data update button and stuff
 		can_buttons = buttons;
 		can_contrTemp = controller_temp;
+		can_converter_mode = converter_mode;
 
 		buttons.Buttons = 0;
 		buttons.ExtraButtons = 0;
+		converter_mode = 0;
 		controller_temp = (LC_Obj_Temperature_t ) { INT16_MIN, INT16_MIN, INT16_MIN, INT16_MIN };
 		last_tick_updated = logic_tick;
 
 		for (int i = 0; i < 16; i++) {
 			RD.Buttons.ButtonArray[i + BtExt_1] = (can_buttons.ExtraButtons & (1 << i)) ? 1 : 0;
 		}
+		//To Be depricated
 		LC_SendRequest(LevcanNodePtr, LC_Broadcast_Address, LC_Obj_ActiveFunctions);
 		LC_SendRequest(LevcanNodePtr, LC_Broadcast_Address, LC_Obj_Temperature);
 	}

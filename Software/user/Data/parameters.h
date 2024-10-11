@@ -163,7 +163,9 @@ typedef struct {
 			uint8_t DutyOn4;
 			uint8_t DutyOff4;
 		} Signal;
-		uint8_t AloneCANshutdown;
+		uint8_t ShutdownByCAN;
+		uint8_t ShutdownOnCharge;
+		uint8_t ShutdownByButton;
 	} Func;
 
 	union {
@@ -188,6 +190,11 @@ typedef struct {
 	} PWMouts;
 
 	struct {
+		uint16_t ThrottleMin;
+		uint16_t ThrottleMax;
+		uint16_t BrakeMin;
+		uint16_t BrakeMax;
+
 		Tsensor_t T1;
 		Tsensor_t T2;
 		uint8_t T1_Threshold;
@@ -197,10 +204,7 @@ typedef struct {
 
 		uint8_t SendControl;
 		uint8_t SendPorts;
-		uint16_t ThrottleMin;
-		uint16_t ThrottleMax;
-		uint16_t BrakeMin;
-		uint16_t BrakeMax;
+		uint8_t InputFilter;
 	} InputsCfg;
 
 	struct{

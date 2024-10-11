@@ -30,7 +30,7 @@ char rdata[512];
 // @formatter:off
 const StorageData_t Storagedata[Struct_number] = { //
 		{ sizeof(Data),		 	1, (intptr_t*) &Data }, //
-		{ sizeof(Config), 		2, (intptr_t*) &Config }, //
+		{ sizeof(Config), 		3, (intptr_t*) &Config }, //
 		{ sizeof(LifeData), 	0, (intptr_t*) &LifeData }, //
 };
 // @formatter:on
@@ -80,6 +80,7 @@ void LoadDefaultParameters(void) {
 	Config.Func.Signal.DutyOn3 = 100;
 	Config.Func.Signal.DutyOn4 = 100;
 
+	Config.InputsCfg.InputFilter = 2;
 	Config.InputsCfg.BrakeMax = 4000;
 	Config.InputsCfg.BrakeMin = 1000;
 	Config.InputsCfg.ThrottleMax = 4000;

@@ -92,6 +92,8 @@ const LCPS_Entry_t PD_Inputs[] = {
 };
 
 const LCPS_Entry_t PD_InputsConf[] = {
+	pstd(LCP_AccessLvl_Any, 	LCP_Normal,		Config.InputsCfg.InputFilter,			((LCP_Decimal32_t){0, 20, 1, 2}),LANG("Inputs filter", "Фильтр входов"),	"%ss" ),
+
 	pstd(LCP_AccessLvl_Any, 	LCP_Normal,		Config.InputsCfg.T1, 					((LCP_Enum_t){0, Tsensor_MAX}),	LANG("T-sensor T1 type", "Тип датчика T1"), tsensors),
 	pstd(LCP_AccessLvl_Any, 	LCP_ROLiveUpd,	ADC_ValuesF.T1,							((LCP_Decimal32_t){0, 1, 1, 1}),LANG("# T-sensor T1", "# Термодатчик T1"),	"%s°C" ),
 	pstd(LCP_AccessLvl_Any, 	LCP_Normal,		Config.InputsCfg.T1_Threshold,			((LCP_Uint32_t){0, 250, 1}),	LANG("T1 Threshold (port I7)", "T1 Порог (порт I7)"), "%d°C"),
@@ -114,7 +116,9 @@ const LCPS_Entry_t PD_InputsConf[] = {
 #define dutymax   100
 #define dutystep   5
 const LCPS_Entry_t PD_Func[] = {
-	pbool(LCP_AccessLvl_Any, 	LCP_Normal,		Config.Func.AloneCANshutdown , 												LANG("Shutdown by CAN", "Отключение по CAN"),0),
+	pbool(LCP_AccessLvl_Any, 	LCP_Normal,		Config.Func.ShutdownByCAN , 												LANG("Shutdown by CAN", "Отключение по CAN"),0),
+	pbool(LCP_AccessLvl_Any, 	LCP_Normal,		Config.Func.ShutdownOnCharge , 												LANG("Shutdown on charge", "Отключение при зарядке"),0),
+	pstd(LCP_AccessLvl_Any, 	LCP_Normal,		Config.Func.ShutdownByButton, 		((LCP_Enum_t){0, BtMax}),				LANG("Shutdown button", "Кнопка отключения"), buttons ),
 	label(LCP_AccessLvl_Any, 	LCP_ReadOnly,		LANG("# Turn signal setup #", "# Настройка поворотников #"),	0 ), //
 	pstd(LCP_AccessLvl_Any, 	LCP_Normal,		Config.Func.Turns.LeftButton, 		((LCP_Enum_t){0, BtMax}),				LANG("Left turn switch", "Кнопка левого поворота"), buttons ),
 	pstd(LCP_AccessLvl_Any, 	LCP_Normal,		Config.Func.Turns.RightButton, 		((LCP_Enum_t){0, BtMax}),				LANG("Right turn switch", "Кнопка правого поворота"), buttons ),

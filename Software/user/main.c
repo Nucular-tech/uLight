@@ -23,7 +23,7 @@
 #define sDEBUG(string) string
 #endif
 
-const Version_t VersionControl = { __DATE__, sDEBUG("0.6.9") };
+const Version_t VersionControl = { __DATE__, sDEBUG("0.6.10") };
 
 typedef struct {
 	uint32_t GoToBoot;
@@ -32,6 +32,11 @@ typedef struct {
 } BootCommand_t;
 #define BootCommand ((BootCommand_t*)CHECK_DWORD)
 
+const GPIO_TypeDef *InputPinsPorts[] = {
+P_IN1_GPIO_Port, P_IN2_GPIO_Port, P_IN3_GPIO_Port, P_IN4_GPIO_Port, P_IN5_GPIO_Port, P_IN6_GPIO_Port };
+const uint8_t InputPinNumber[] = {
+P_IN1_Pin, P_IN2_Pin, P_IN3_Pin, P_IN4_Pin, P_IN5_Pin, P_IN6_Pin };
+#define InputPortsCnt 6
 // Private functions
 void RCC_user_init(void);
 void GPIO_user_init(void);
@@ -81,14 +86,26 @@ int main(int argc, char *argv[]) {
 }
 
 void updateButtons(void) {
+	//100hz update rate
+	static int8_t ports_filter[InputPortsCnt] = { 0 };
+
 	RD.Buttons.OffBt = 0;
 	RD.Buttons.OnBt = 1;
-	RD.Buttons.Int1 = !GPIO_PIN_GET(P_IN1_Pin, P_IN1_GPIO_Port);
-	RD.Buttons.Int2 = !GPIO_PIN_GET(P_IN2_Pin, P_IN2_GPIO_Port);
-	RD.Buttons.Int3 = !GPIO_PIN_GET(P_IN3_Pin, P_IN3_GPIO_Port);
-	RD.Buttons.Int4 = !GPIO_PIN_GET(P_IN4_Pin, P_IN4_GPIO_Port);
-	RD.Buttons.Int5 = !GPIO_PIN_GET(P_IN5_Pin, P_IN5_GPIO_Port);
-	RD.Buttons.Int6 = !GPIO_PIN_GET(P_IN6_Pin, P_IN6_GPIO_Port);
+
+	uint8_t *input = (uint8_t*) &RD.Buttons.Int1;
+	for (int p = 0; p < InputPortsCnt; p++) {
+		int inputstate = !GPIO_PIN_GET(InputPinNumber[p], (GPIO_TypeDef*) InputPinsPorts[p]);
+
+		//waiting to change input
+		if (inputstate ^ input[p])
+			ports_filter[p] += 1; //10ms
+		else
+			ports_filter[p] = 0;
+
+		if (ports_filter[p] > Config.InputsCfg.InputFilter)
+			input[p] = !input[p];
+
+	}
 
 	//virtual input for t-sensors
 	//get value and invert if needed. with 1C hysteresis
