@@ -383,6 +383,9 @@ void LogicProcessData(LC_NodeDescriptor_t *node, LC_Header_t header, void *data,
 	if (logic_tick - last_tick_updated >= 50) {
 		//20hz can data update button and stuff
 		can_buttons = buttons;
+		for (int i = 0; i < sizeof(can_exbuttons); i++) {
+			can_exbuttons[i] = (can_buttons.ExtraButtons & ((uint16_t)1 << i)) > 0;
+		}
 		can_contrTemp = controller_temp;
 		can_converter_mode = converter_mode;
 

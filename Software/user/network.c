@@ -64,6 +64,7 @@ extern void delay_ms(uint32_t delay);
 
 void Network_Init(uint8_t node_id) {
 
+	//24 Mhz base clock
 	//Setup CAN HAL at 1 MBit
 	CAN_Init(0x01050002);
 

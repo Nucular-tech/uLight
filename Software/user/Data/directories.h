@@ -74,7 +74,7 @@ LCPS_Entry_t PD_About[] = {
 	//pstd(LCP_AccessLvl_Any, 	LCP_Normal | LCP_ReadOnly,		RD.Lifetime.Hours,			zeroU32_t,	"-", 	LANG("%s h", "%d ч.")),
 	//pstd(LCP_AccessLvl_Any, 	LCP_Normal | LCP_ReadOnly,		RD.Lifetime.Days,			zeroU32_t,	"--", 	LANG("%s days", "%d дн.")),
 };
-
+extern uint8_t can_exbuttons[];
 const LCPS_Entry_t PD_Inputs[] = {
 	pstd(LCP_AccessLvl_Any, 	LCP_ROLiveUpd,		ADC_ValuesF.Amp,		((LCP_Decimal32_t){0,0,0,3}),	LANG("Current", "Ток"),			"%s A" ),
 	pstd(LCP_AccessLvl_Any, 	LCP_ROLiveUpd,		ADC_ValuesF.V12,		((LCP_Decimal32_t){0,0,0,3}),	LANG("Voltage", "Напряжение"),	"%s V" ),
@@ -89,6 +89,24 @@ const LCPS_Entry_t PD_Inputs[] = {
 	pbool(LCP_AccessLvl_Any, 	LCP_ROLiveUpd,		RD.Buttons.Int4, 		LANG("Input I4", "Вход I4"), 0 ),
 	pbool(LCP_AccessLvl_Any, 	LCP_ROLiveUpd,		RD.Buttons.Int5, 		LANG("Input I5", "Вход I5"), 0 ),
 	pbool(LCP_AccessLvl_Any, 	LCP_ROLiveUpd,		RD.Buttons.Int6, 		LANG("Input I6", "Вход I6"), 0 ),
+	pbool(LCP_AccessLvl_Any, 	LCP_ROLiveUpd, 		can_exbuttons[0], 	LANG("CAN I1", "CAN I1"), 0 ),
+	pbool(LCP_AccessLvl_Any, 	LCP_ROLiveUpd, 		can_exbuttons[1], 	LANG("CAN I2", "CAN I2"), 0 ),
+	pbool(LCP_AccessLvl_Any, 	LCP_ROLiveUpd, 		can_exbuttons[2], 	LANG("CAN I3", "CAN I3"), 0 ),
+	pbool(LCP_AccessLvl_Any, 	LCP_ROLiveUpd, 		can_exbuttons[3], 	LANG("CAN I4", "CAN I4"), 0 ),
+	pbool(LCP_AccessLvl_Any, 	LCP_ROLiveUpd, 		can_exbuttons[4], 	LANG("CAN I5", "CAN I5"), 0 ),
+	pbool(LCP_AccessLvl_Any, 	LCP_ROLiveUpd, 		can_exbuttons[5], 	LANG("CAN I6", "CAN I6"), 0 ),
+	pbool(LCP_AccessLvl_Any, 	LCP_ROLiveUpd, 		can_exbuttons[6], 	LANG("CAN I7", "CAN I7"), 0 ),
+	pbool(LCP_AccessLvl_Any, 	LCP_ROLiveUpd, 		can_exbuttons[7], 	LANG("CAN I8", "CAN I8"), 0 ),
+	pbool(LCP_AccessLvl_Any, 	LCP_ROLiveUpd, 		can_exbuttons[8], 	LANG("CAN I9", "CAN I9"), 0 ),
+	pbool(LCP_AccessLvl_Any, 	LCP_ROLiveUpd, 		can_exbuttons[9], 	LANG("CAN I10", "CAN I10"), 0 ),
+	pbool(LCP_AccessLvl_Any, 	LCP_ROLiveUpd, 		can_exbuttons[10], 	LANG("CAN I11", "CAN I11"), 0 ),
+	pbool(LCP_AccessLvl_Any, 	LCP_ROLiveUpd, 		can_exbuttons[11], 	LANG("CAN I12", "CAN I12"), 0 ),
+	pbool(LCP_AccessLvl_Any, 	LCP_ROLiveUpd, 		can_exbuttons[12], 	LANG("CAN I13", "CAN I13"), 0 ),
+	pbool(LCP_AccessLvl_Any, 	LCP_ROLiveUpd, 		can_exbuttons[13], 	LANG("CAN I14", "CAN I14"), 0 ),
+	pbool(LCP_AccessLvl_Any, 	LCP_ROLiveUpd, 		can_exbuttons[14], 	LANG("CAN I15", "CAN I15"), 0 ),
+	pbool(LCP_AccessLvl_Any, 	LCP_ROLiveUpd, 		can_exbuttons[15], 	LANG("CAN I16", "CAN I16"), 0 ),
+
+
 };
 
 const LCPS_Entry_t PD_InputsConf[] = {
