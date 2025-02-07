@@ -77,7 +77,7 @@ void Network_Init(uint8_t node_id) {
 	//Setup file client for this node, to access file operations over CAN bus
 	LC_FileClientInit(node_init);
 	//Setup parameter server for this node, to make it configurable over CAN bus
-	LCP_ParameterServerInit(node_init);
+	LCP_ParameterServerInit(node_init, 0);
 	//This node may produce Events, they should be displayed on dashboard
 	LC_EventInit(node_init);
 

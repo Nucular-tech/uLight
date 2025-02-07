@@ -47,6 +47,7 @@ uint8_t getButton(uint8_t button);
 //variables
 uint32_t logic_tick = 0;
 LC_Obj_Buttons_t can_buttons = { 0 };
+uint8_t can_exbuttons[16];
 uint8_t can_converter_mode = 0;
 LC_Obj_Temperature_t can_contrTemp = { 0 };
 logicData_t logicData = { 0 };
@@ -89,7 +90,7 @@ void LogicTick(uint32_t dt) {
 					LC_Broadcast_Address };
 			memset(&buttons, 0, sizeof(buttons));
 
-			buttons.Lock = 1;
+			//buttons.Lock = 1; // bugged
 			if (Config.InputsCfg.SendPorts == 1) {
 				buttons.ExButton1 = RD.Buttons.Int1;
 				buttons.ExButton2 = RD.Buttons.Int2;
