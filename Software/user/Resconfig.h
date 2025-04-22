@@ -33,3 +33,8 @@
 #define SRAM __attribute__ ((section(".sram")))
 
 #define STORAGE_CRC
+
+#define XCFG_FORMAT_FLOAT 0
+#define XCFG_FORMAT_FLOAT_SPECIAL 0
+
+

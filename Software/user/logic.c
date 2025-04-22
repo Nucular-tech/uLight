@@ -65,10 +65,9 @@ void LogicTick(uint32_t dt) {
 			static LC_Obj_ThrottleV_t throttle = { 0 };
 			static LC_Obj_BrakeV_t brake = { 0 };
 
-			const LC_ObjectRecord_t throttle_send = { .Address = &throttle, .Size = sizeof(throttle), .Attributes.TCP = 0, .Attributes.Priority = LC_Priority_Mid,
-					.NodeID = LC_Broadcast_Address };
-			const LC_ObjectRecord_t brake_send = { .Address = &brake, .Size = sizeof(brake), .Attributes.TCP = 0, .Attributes.Priority = LC_Priority_Mid, .NodeID =
+			const LC_ObjectRecord_t throttle_send = { .Address = &throttle, .Size = sizeof(throttle), .Attributes.TCP = 0, .Attributes.Priority = LC_Priority_Mid, .NodeID =
 					LC_Broadcast_Address };
+			const LC_ObjectRecord_t brake_send = { .Address = &brake, .Size = sizeof(brake), .Attributes.TCP = 0, .Attributes.Priority = LC_Priority_Mid, .NodeID = LC_Broadcast_Address };
 
 			throttle.ThrottleV = ADC_ValuesF.VThrottle;
 			LC_SendMessage(LevcanNodePtr, (void*) &throttle_send, LC_Obj_ThrottleV);
@@ -86,8 +85,7 @@ void LogicTick(uint32_t dt) {
 		if (Config.InputsCfg.SendPorts && sent_data >= 20) {
 			static LC_Obj_Buttons_t buttons;
 
-			const LC_ObjectRecord_t btns_send = { .Address = &buttons, .Size = sizeof(buttons), .Attributes.TCP = 0, .Attributes.Priority = LC_Priority_Mid, .NodeID =
-					LC_Broadcast_Address };
+			const LC_ObjectRecord_t btns_send = { .Address = &buttons, .Size = sizeof(buttons), .Attributes.TCP = 0, .Attributes.Priority = LC_Priority_Mid, .NodeID = LC_Broadcast_Address };
 			memset(&buttons, 0, sizeof(buttons));
 
 			//buttons.Lock = 1; // bugged

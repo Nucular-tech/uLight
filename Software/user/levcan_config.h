@@ -5,6 +5,8 @@
  *      Author: Vasiliy Sukhoparov (VasiliSk)
  */
 
+#include "xformathandler.h"
+
 #pragma once
 
 //user functions for critical sections
@@ -74,3 +76,17 @@ extern void assert_failed(char *file, uint32_t line);
 #endif
 extern void delay_ms(uint32_t delay);
 #define lcdelay delay_ms
+
+extern int vsnformatf(char *s, size_t size, const char *tmp, va_list ap);
+extern int vsformatf(char *s, const char *tmp, va_list ap);
+extern int snformatf(char *s, size_t size, const char *tmp, ...);
+extern int sformatf(char *s, const char *tmp, ...);
+
+#undef snprintf
+#define snprintf snformatf
+#undef vsnprintf
+#define vsnprintf vsnformatf
+#undef vsprintf
+#define vsprintf vsformatf
+#undef sprintf
+#define sprintf sformatf

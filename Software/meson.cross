@@ -1,0 +1,16 @@
+[properties]
+needs_exe_wrapper = true
+
+[host_machine]
+cpu_family = 'arm'
+cpu = 'cortex-m3'
+endian = 'little'
+system = 'baremetal'
+
+[binaries]
+c = 'arm-none-eabi-gcc'
+cpp = 'arm-none-eabi-g++'
+ld = 'arm-none-eabi-ld'
+ar = 'arm-none-eabi-ar'
+strip = 'arm-none-eabi-strip'
+objcopy = 'arm-none-eabi-objcopy'

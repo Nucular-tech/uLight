@@ -23,7 +23,10 @@
 #define sDEBUG(string) string
 #endif
 
-const Version_t VersionControl = { __DATE__, sDEBUG("0.6.11") };
+#ifndef MESON_VERSION
+#define MESON_VERSION "0.6.0"
+#endif
+const Version_t VersionControl = { __DATE__, sDEBUG(MESON_VERSION) };
 
 typedef struct {
 	uint32_t GoToBoot;

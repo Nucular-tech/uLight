@@ -62,3 +62,4 @@ dkms.conf
 /uLBoot/*
 /.hg*
 /TestingSW/*
+/Software/old hex/*
