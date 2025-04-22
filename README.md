@@ -13,9 +13,13 @@ Used:
  - GNU MCU Build tools 2.12-20190422
  
 To build Debug run:
+
 setup Debug --cross-file meson.cross --reconfigure
+
 compile -C Debug
 
 To build Release run:
+
 setup Release --cross-file meson.cross --reconfigure --buildtype=release --optimization=2
+
 compile -C Release
