@@ -5,7 +5,7 @@
 # Release prepare: setup Release --cross-file meson.cross --reconfigure --buildtype=release --optimization=2
 # DO NOT USE GCC v13 !! it is bugged
 project('Nucular uLight', 'c', 'cpp',
-  version: '0.6.11',
+  version: '0.6.12',
   default_options: [
     'buildtype=debug',    # Set the build type
     'warning_level=2',    # Adjust warning level (optional)

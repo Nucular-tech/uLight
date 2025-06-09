@@ -383,7 +383,7 @@ void LogicProcessData(LC_NodeDescriptor_t *node, LC_Header_t header, void *data,
 		//20hz can data update button and stuff
 		can_buttons = buttons;
 		for (int i = 0; i < sizeof(can_exbuttons); i++) {
-			can_exbuttons[i] = (can_buttons.ExtraButtons & ((uint16_t)1 << i)) > 0;
+			can_exbuttons[i] = (can_buttons.ExtraButtons & ((uint16_t) 1 << i)) > 0;
 		}
 		can_contrTemp = controller_temp;
 		can_converter_mode = converter_mode;
@@ -404,5 +404,11 @@ void LogicProcessData(LC_NodeDescriptor_t *node, LC_Header_t header, void *data,
 }
 
 int utils_map_int(int x, int in_min, int in_max, int out_min, int out_max) {
+	if (in_min == in_max) {
+		if (x < in_min)
+			return out_min;
+		else
+			return out_max;
+	}
 	return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
